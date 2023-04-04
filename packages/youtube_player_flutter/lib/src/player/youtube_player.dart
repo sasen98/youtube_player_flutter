@@ -42,6 +42,10 @@ class YoutubePlayer extends StatefulWidget {
   /// Sets [Key] as an identification to underlying web view associated to the player.
   final Key? key;
 
+  final void Function(Function callback)? toggleScreenCallBack;
+
+  final bool showFullScreen;
+
   /// A [YoutubePlayerController] to control the player.
   final YoutubePlayerController controller;
 
@@ -133,6 +137,8 @@ class YoutubePlayer extends StatefulWidget {
   /// Creates [YoutubePlayer] widget.
   const YoutubePlayer({
     this.key,
+    this.toggleScreenCallBack,
+    this.showFullScreen = true,
     required this.controller,
     this.width,
     this.aspectRatio = 16 / 9,
@@ -378,7 +384,15 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
                                 ),
                                 RemainingDuration(),
                                 const PlaybackSpeedButton(),
-                                FullScreenButton(),
+                                if (widget.showFullScreen) ...[
+                                  FullScreenButton(
+                                    toggleScreenCallBack: (callback) {
+                                      if (widget.toggleScreenCallBack != null) {
+                                        widget.toggleScreenCallBack!(callback);
+                                      }
+                                    },
+                                  ),
+                                ],
                               ],
                         ),
                       ),

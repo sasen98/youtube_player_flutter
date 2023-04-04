@@ -10,6 +10,7 @@ import '../utils/youtube_player_controller.dart';
 class FullScreenButton extends StatefulWidget {
   /// Overrides the default [YoutubePlayerController].
   final YoutubePlayerController? controller;
+  final void Function(Function callback)? toggleScreenCallBack;
 
   /// Defines color of the button.
   final Color color;
@@ -18,6 +19,7 @@ class FullScreenButton extends StatefulWidget {
   FullScreenButton({
     this.controller,
     this.color = Colors.white,
+    this.toggleScreenCallBack,
   });
 
   @override
@@ -26,6 +28,14 @@ class FullScreenButton extends StatefulWidget {
 
 class _FullScreenButtonState extends State<FullScreenButton> {
   late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    if (widget.toggleScreenCallBack != null) {
+      widget.toggleScreenCallBack!(_controller.toggleFullScreenMode);
+    }
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {

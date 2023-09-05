@@ -56,6 +56,8 @@ class YoutubePlayer extends StatefulWidget {
   /// {@endtemplate}
   final double? width;
 
+  final Widget? errorWidget;
+
   /// {@template youtube_player_flutter.aspectRatio}
   /// Defines the aspect ratio to be assigned to the player. This property along with [width] calculates the player size.
   ///
@@ -153,6 +155,7 @@ class YoutubePlayer extends StatefulWidget {
     this.bottomActions,
     this.actionsPadding = const EdgeInsets.all(8.0),
     this.thumbnail,
+    this.errorWidget,
     this.showVideoProgressIndicator = false,
   })  : progressColors = progressColors ?? const ProgressBarColors(),
         progressIndicatorColor = progressIndicatorColor ?? Colors.red;
@@ -248,49 +251,50 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
           color: Colors.black,
           width: widget.width ?? MediaQuery.of(context).size.width,
           child: _buildPlayer(
-            errorWidget: Container(
-              color: Colors.black87,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
+            errorWidget: widget.errorWidget ??
+                Container(
+                  color: Colors.black87,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 40.0, vertical: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 5.0),
-                      Expanded(
-                        child: Text(
-                          errorString(
-                            controller.value.errorCode,
-                            videoId: controller.metadata.videoId.isNotEmpty
-                                ? controller.metadata.videoId
-                                : controller.initialVideoId,
-                          ),
-                          style: const TextStyle(
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
                             color: Colors.white,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 15.0,
                           ),
+                          const SizedBox(width: 5.0),
+                          Expanded(
+                            child: Text(
+                              errorString(
+                                controller.value.errorCode,
+                                videoId: controller.metadata.videoId.isNotEmpty
+                                    ? controller.metadata.videoId
+                                    : controller.initialVideoId,
+                              ),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        'Error Code: ${controller.value.errorCode}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Error Code: ${controller.value.errorCode}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
           ),
         ),
       ),
